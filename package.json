@@ -1,7 +1,7 @@
 {
   "name": "nodetut1",
   "version": "1.0.0",
-  "description": "Find and remove or version duplicate files",
+  "description": "Find and remove or rename duplicate files",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,6 +10,13 @@
   },
   "author": "Dale Corns",
   "email": "codecantor@gmail.com",
+  "git repository": "https://github.com/dcorns/AntiDup",
+  "keywords": [
+    "duplicate",
+    "files",
+    "remove",
+    "rename"
+  ],
   "license": "ISC",
   "dependencies": {
     "open": "^9.1.0"
