@@ -1,5 +1,5 @@
 {
-  "name": "nodetut1",
+  "name": "antidup",
   "version": "1.0.0",
   "description": "Find and remove or rename duplicate files",
   "main": "index.js",
