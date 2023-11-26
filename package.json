@@ -1,0 +1,17 @@
+{
+  "name": "nodetut1",
+  "version": "1.0.0",
+  "description": "Find and remove or version duplicate files",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Dale Corns",
+  "email": "codecantor@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "open": "^9.1.0"
+  }
+}
