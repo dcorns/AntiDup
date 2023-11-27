@@ -8,7 +8,7 @@ Platform independent, interactive command line utility for Finding, renaming or 
 
 ## Features
 
-- Use from the command line or import as a dependency
+- Use from the command line
 - Search the file system recursively
 - Optionally open each duplicate manually or automatically open each group of duplicates
 - Filter search by file extension
