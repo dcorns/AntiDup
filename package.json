@@ -1,8 +1,11 @@
 {
   "name": "antidup",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Find and remove or rename duplicate files",
   "main": "index.js",
+  "bin": {
+    "antidup": "index.js"
+  },
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
