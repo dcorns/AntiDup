@@ -29,3 +29,15 @@ This will search all files and directories under "/" for duplicate filenames wit
 `antidup / .jpg true`
 
 The flow of the dialog would occur something like this:
+!["commandLineFlow.png"](commandLineFlow.png "Command Line Flow")
+
+- As shown in the image files are displayed as they are being checked.
+- Then the option to delete all duplicates within a specific directory is displayed
+- The first duplicate file is displayed along with the full path of the duplicates
+- Options to delete, skip, rename or open the first duplicate are displayed as well as the option to quit.
+- That process will continue for all duplicates
+
+### duplicates.log
+
+Everytime you run antidup a duplicates.log file is created in the directory from which antidup is executed. It contains a list of all the duplicates found in the following format.
+!["Sample of duplicates.log file"](antidupLogFileImage.png "Sample of duplicates.log file")
