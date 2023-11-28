@@ -1,6 +1,6 @@
 {
   "name": "antidup",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Find and remove or rename duplicate files",
   "main": "index.js",
   "bin": {

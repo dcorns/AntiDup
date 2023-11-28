@@ -20,12 +20,12 @@ Platform independent, interactive command line utility for Finding, renaming or 
 
 ### Command Line
 
-`node AntiDup string: root of search path <string: file extension> <boolean: open duplicates automatically>`
+`antidup string: root of search path <string: file extension> <boolean: open duplicates automatically>`
 
 Example:
 
 This will search all files and directories under "/" for duplicate filenames with the .jpg extension and when listing the duplicates it will open them with the default application for inspection.
 
-`node AntiDup / .jpg true`
+`antidup / .jpg true`
 
 The flow of the dialog would occur something like this:
