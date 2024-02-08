@@ -46,4 +46,4 @@ The flow of the dialog would occur something like this:
 Everytime you run antidup a duplicates.log file is created in the directory from which antidup is executed. It contains a list of all the duplicates found in the following format.
 !["Sample of duplicates.log file"](antidupLogFileImage.png "Sample of duplicates.log file")
 You can provide a different name for the log file using the
-4th argument to the function. When using the useBytes option, Will be identified with a path for each group of duplicates and not the file name as shown in the previous example.
+4th argument to the function. When using the useBytes option, duplicatres will be identified with a path for each group of duplicates and not the file name as shown in the previous example.
