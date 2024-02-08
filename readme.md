@@ -12,7 +12,8 @@ Platform independent, interactive command line utility for Finding, renaming or 
 - Search the file system recursively
 - Optionally open each duplicate manually or automatically open each group of duplicates
 - Filter search by file extension
-- Creates a log file (duplicates.log) that contains the duplicate search results.
+- Creates a log file (default: duplicates.log) that contains the duplicate search results.
+- Search for duplicates by comparing binary data.
 
 * Delete all duplicates in a specific file path in one key stroke
 
@@ -20,7 +21,10 @@ Platform independent, interactive command line utility for Finding, renaming or 
 
 ### Command Line
 
-`antidup string: root of search path <string: file extension> <boolean: open duplicates automatically>`
+`antidup string: root of search path <string: file extension> <boolean: open duplicates automatically><string: logFileName <boolean: compare using bytes>`
+
+When skipping optional arguments, a place holder must be provided. Use false for boolean and null for strings.
+`antidup / .jpg false null true`
 
 Example:
 
@@ -41,3 +45,5 @@ The flow of the dialog would occur something like this:
 
 Everytime you run antidup a duplicates.log file is created in the directory from which antidup is executed. It contains a list of all the duplicates found in the following format.
 !["Sample of duplicates.log file"](antidupLogFileImage.png "Sample of duplicates.log file")
+You can provide a different name for the log file using the
+4th argument to the function. When using the useBytes option, Will be identified with a path for each group of duplicates and not the file name as shown in the previous example.
