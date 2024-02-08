@@ -28,6 +28,9 @@ const manageDups = async (filesList, autoOpen) => {
     `Would you like to delete all duplicates within a specific directory?y,[n]: `
   );
   if (deleteAll === "y") {
+    console.log(
+      "Warning: This will delete all files on the duplicate list, not recommended when useBytes search option is used!"
+    );
     const deleteAllFromThisDirectory = await rl.question(
       `Enter the absolute path of the directory from which you would like to delete all duplicates: `
     );
@@ -43,9 +46,9 @@ const manageDups = async (filesList, autoOpen) => {
           }
         }
       }
+      rl.close();
+      return;
     }
-    rl.close();
-    return;
   }
 
   for (const list in filesList) {
@@ -63,7 +66,7 @@ const manageDups = async (filesList, autoOpen) => {
     while (queue.length) {
       const currentPath = queue[0];
       const a = await rl.question(
-        `[d]elete, [s]kip, [r]ename or [o]pen this duplicate. [q]uit ${currentPath}?)[s]: `
+        `[d]elete, [s]kip, [r]ename,[c]onvert file to a link, or [o]pen this duplicate. [q]uit ${currentPath}?)[s]: `
       );
       if (a === "o") {
         open(currentPath);
@@ -88,6 +91,23 @@ const manageDups = async (filesList, autoOpen) => {
       } else if (a === "q") {
         rl.close();
         process.exit(1);
+      } else if (a === "c") {
+        //Need error handling for this since not all drives will support symbolic links
+        console.log(`Not yet implemented`);
+        //convert to symbolic link
+        // const symLinkTarget = await rl.question(
+        //   `Enter the path to the links target: `
+        // );
+        // console.log(`Deleting ${currentPath}`);
+        //await fs.unlink(currentPath);
+        // console.log(
+        //   `Creating symbolic link from ${currentPath} to ${symLinkTarget}`
+        // );
+        // await fs.symlink(
+        //   "f:/Lisa/P1010718.JPG",
+        //   "f:/Ed'sFuneral/P1010718.JPG",
+        //   "file"
+        // );
       } else {
         //default to skip
         queue.shift(currentPath);

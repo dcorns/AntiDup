@@ -12,15 +12,28 @@
 import * as fs from "node:fs/promises";
 import * as putils from "node:path";
 import os from "node:os";
+import imageSize from "image-size";
+import path from "path";
 
 //Some aspects of code must changed based on OS
 const winOS = os.platform() === "win32";
 const getFileName =
   os.platform() === "win32" ? putils.basename : putils.posix.basename;
 
-const findDups = async (root, ext, logFileName = "duplicates.log") => {
+let findDups = async (
+  root,
+  ext,
+  logFileName = "duplicates.log",
+  usePixels = false
+) => {
+  console.log("findDups called");
 
   // validate arguments, ext is optional
+  if (usePixels === "false") usePixels = false;
+  if (logFileName === "null") logFileName = "duplicates.log";
+  console.log(
+    `root: ${root}, ext: ${ext}, logFileName: ${logFileName}, usePixels: ${usePixels}`
+  );
   if (typeof root !== "string" || (ext && typeof ext !== "string")) {
     console.log(root, ext);
     console.log(
@@ -30,13 +43,14 @@ const findDups = async (root, ext, logFileName = "duplicates.log") => {
   }
   const extText = ext
     ? `Only check files with the ${ext} extension.`
-    : "No extension specified: check all files!";
+    : "No extension specified: checking all files! This may take a while!";
 
   //Normalize Extension text: basename function does not ignore case on extensions but windows does
   if (ext) ext = ext.toLowerCase();
 
   const firstOccurenceOfFileName = {};
   const duplicates = {};
+  const pixelsChecked = {};
   // Use a queue to traverse the directory tree
   const queue = [root];
   let duplicateCount = 0;
@@ -57,18 +71,68 @@ const findDups = async (root, ext, logFileName = "duplicates.log") => {
         if (ext && putils.extname(currentPath).toLowerCase() !== ext) continue;
         if (!stat.isSymbolicLink()) {
           const fileName = getFileName(currentPath);
-          //Check for duplicate file names using firstOccurenceOfFileName and duplicates objects
-          if (duplicates[fileName]) {
-            duplicates[fileName].push(currentPath);
-            duplicateCount++;
-          } else if (firstOccurenceOfFileName[fileName]) {
-            duplicates[fileName] = [
-              firstOccurenceOfFileName[fileName],
-              currentPath,
-            ];
-            duplicateCount++;
+          if (!usePixels) {
+            console.log("Executing without pixels");
+            //Check for duplicate file names using firstOccurenceOfFileName and duplicates objects
+            if (duplicates[fileName]) {
+              duplicates[fileName].push(currentPath);
+              duplicateCount++;
+            } else if (firstOccurenceOfFileName[fileName]) {
+              duplicates[fileName] = [
+                firstOccurenceOfFileName[fileName],
+                currentPath,
+              ];
+              duplicateCount++;
+            } else {
+              firstOccurenceOfFileName[fileName] = currentPath;
+            }
           } else {
-            firstOccurenceOfFileName[fileName] = currentPath;
+            pixelsChecked[currentPath] = true;
+            //Note: here we assume that all images have a valid extension. Images that do not have a matching extension will not be compared.
+            const pixelExt = putils.extname(currentPath).toLowerCase();
+            const image1Path = currentPath;
+            const image1 = await fs.readFile(image1Path);
+
+            let pixelQueue = [...queue];
+
+            while (pixelQueue.length) {
+              const currentPixelPath = pixelQueue.shift();
+              const stat = await fs.stat(currentPixelPath);
+              if (stat.isDirectory()) {
+                process.stdout.write(`\nChecking Files in ${currentPixelPath}`);
+                //Add all files and directories to the queue
+                const files = await fs.readdir(currentPixelPath);
+                for (const file of files) {
+                  if (putils.extname(file).toLowerCase() === pixelExt)
+                    pixelQueue.push(`${currentPixelPath}/${file}`); //only add files with matching extension to pixelQueue
+                  process.stdout.write(".");
+                }
+              } else if (stat.isFile()) {
+                if (
+                  !pixelsChecked[currentPixelPath] &&
+                  putils.extname(currentPixelPath).toLowerCase() === pixelExt
+                ) {
+                  const image2Path = currentPixelPath;
+                  const image1Stat = await fs.stat(image1Path);
+                  const image2Stat = await fs.stat(image2Path);
+                  if (image1Stat.size === image2Stat.size) {
+                    console.log("file sizes match");
+                    const image1Data = await fs.readFile(image1Path);
+                    const image2Data = await fs.readFile(image2Path);
+                    const result = Buffer.compare(image1Data, image2Data);
+                    if (result === 0) {
+                      if (duplicates[image1Path]) {
+                        duplicates[image1Path].push(image2Path);
+                        duplicateCount++;
+                      } else {
+                        duplicates[image1Path] = [image1Path, image2Path];
+                        duplicateCount++;
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -77,25 +141,34 @@ const findDups = async (root, ext, logFileName = "duplicates.log") => {
       else console.error(e);
     }
   }
-
+  console.log("Writing log file");
+  console.log(logFileName);
   fs.writeFile(
-    "duplicates.log",
+    logFileName,
     `Total duplicate incidents: ${duplicateCount}\n` +
       JSON.stringify(duplicates, null, 2),
     "utf8"
   );
   return { duplicates, duplicateCount };
 };
-
-if (process.argv.length > 2) {
+const thisModuleName = path.parse(import.meta.url).name;
+const callingModuleName = path.parse(process.argv[1]).name;
+if (thisModuleName === callingModuleName && process.argv.length > 2) {
   console.log("findDups called from command line");
   const root = process.argv[2];
   const extKey = process.argv[3];
-  const { duplicates, duplicateCount } = await findDups(root, extKey);
-  console.log(
-    `There were ${duplicateCount} duplications found in ${root} with extension ${extKey}.`
+  const logFileName = process.argv[4] || "duplicates.log";
+  const usePixels = process.argv[5] || false;
+  const { duplicates, duplicateCount } = await findDups(
+    root,
+    extKey,
+    logFileName,
+    usePixels
   );
-  console.log('Check the file "duplicates.log" for details.');
+  console.log(
+    `\r${duplicateCount} duplication/s found in ${root} with extension ${extKey}.`
+  );
+  console.log(`Check the file ${logFileName} for details.`);
 }
 
 export default findDups;
