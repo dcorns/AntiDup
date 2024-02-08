@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from "node:path";
 import findDups from "./findDups.js";
 import manageDups from "./manageDups.js";
 //findDups.js is a function that takes a root directory and an optional extension as arguments
