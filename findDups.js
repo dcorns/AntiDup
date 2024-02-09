@@ -116,11 +116,11 @@ let findDups = async (
                   const image1Stat = await fs.stat(image1Path);
                   const image2Stat = await fs.stat(image2Path);
                   if (image1Stat.size === image2Stat.size) {
-                    console.log("file sizes match");
                     const image1Data = await fs.readFile(image1Path);
                     const image2Data = await fs.readFile(image2Path);
                     const result = Buffer.compare(image1Data, image2Data);
                     if (result === 0) {
+                      process.stdout.write("-");
                       if (duplicates[image1Path]) {
                         duplicates[image1Path].push(image2Path);
                         duplicateCount++;
