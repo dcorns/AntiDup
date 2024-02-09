@@ -33,7 +33,7 @@ This will search all files and directories under "/" for duplicate filenames wit
 `antidup / .jpg true`
 
 The flow of the dialog would occur something like this:
-!["commandLineFlow.png"](commandLineFlow.png "Command Line Flow")
+!["commandLineFlow.png"](./commandLineFlow.png "Command Line Flow")
 
 - As shown in the image files are displayed as they are being checked.
 - Then the option to delete all duplicates within a specific directory is displayed
@@ -44,6 +44,6 @@ The flow of the dialog would occur something like this:
 ### duplicates.log
 
 Everytime you run antidup a duplicates.log file is created in the directory from which antidup is executed. It contains a list of all the duplicates found in the following format.
-!["Sample of duplicates.log file"](antidupLogFileImage.png "Sample of duplicates.log file")
+!["Sample of duplicates.log file"](./antidupLogFileImage.png "Sample of duplicates.log file")
 You can provide a different name for the log file using the
 4th argument to the function. When using the useBytes option, duplicates will be identified with a path for each group of duplicates and not the file name as shown in the previous example.
